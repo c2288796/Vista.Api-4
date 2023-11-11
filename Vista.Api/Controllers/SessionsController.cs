@@ -83,11 +83,11 @@ namespace Vista.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Sessions
+        // POST: api/Sessions/AddSessionDate
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // Create a new session record.
-        [HttpPost]
-        public async Task<ActionResult<Session>> PostSession(Session session)
+        [HttpPost("AddSessionDate")]
+        public async Task<ActionResult<Session>> AddSessionDate(Session session)
         {
           if (_context.Sessions == null)
           {
