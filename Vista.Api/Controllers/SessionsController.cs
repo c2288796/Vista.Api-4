@@ -38,6 +38,7 @@ namespace Vista.Api.Controllers
         public async Task<ActionResult<IEnumerable<Session>>> GetFreeSessions(DateTime date, string category)
         {
             var sessions = await _context.Sessions
+                .Include(s => s.Trainer)
                 .Where(s => s.SessionDate == date
                     && s.BookingReference == null
                     && s.Trainer.TrainerCategories != null
