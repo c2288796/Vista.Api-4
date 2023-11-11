@@ -45,15 +45,15 @@ namespace Vista.Api.Controllers
                 .Include(s => s.Trainer)
                 .Where(s => s.SessionDate == date
                     && s.BookingReference == null
-                    && s.Trainer.TrainerCategories != null
+                    && s.Trainer!.TrainerCategories != null // Cannot be null as we have a foreign key constraint.
                     && s.Trainer.TrainerCategories
-                        .Any(tr => tr.Category.CategoryCode == category))
+                        .Any(tr => tr.Category!.CategoryCode == category)) // Cannot be null as we have a foreign key constraint.
                 .Select(s => new SessionFreeSlotDto
                 {
                     SessionId = s.SessionId,
                     SessionDate = s.SessionDate,
                     TrainerId = s.TrainerId,
-                    TrainerName = s.Trainer.Name
+                    TrainerName = s.Trainer!.Name // Cannot be null as we have a foreign key constraint.
                 })
                     .ToListAsync();
 
