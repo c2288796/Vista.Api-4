@@ -51,10 +51,10 @@ namespace Vista.Web.Controllers
             return View(workshopStaff);
         }
 
-        // GET: WorkshopStaff/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: WorkshopStaff/Delete?workshopId=2&staffId=1
+        public async Task<IActionResult> Delete(int? workshopId, int? staffId)
         {
-            if (id == null || _context.WorkshopStaff == null)
+            if (workshopId == null || staffId == null || _context.WorkshopStaff == null)
             {
                 return NotFound();
             }
@@ -62,7 +62,7 @@ namespace Vista.Web.Controllers
             var workshopStaff = await _context.WorkshopStaff
                 .Include(w => w.Staff)
                 .Include(w => w.Workshop)
-                .FirstOrDefaultAsync(m => m.WorkshopId == id);
+                .FirstOrDefaultAsync(m => m.WorkshopId == workshopId && m.StaffId == staffId);
             if (workshopStaff == null)
             {
                 return NotFound();
