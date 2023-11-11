@@ -40,6 +40,31 @@ namespace Vista.Web.Data
                 .WithMany(sp => sp.Staff)
                 .HasForeignKey(sp => sp.WorkshopId);
 
+            modelBuilder.Entity<Staff>().HasData(
+                new Staff(1, "MacGrory", "Shripati"),
+                new Staff(2, "Martinsson", "Nani"),
+                new Staff(3, "Presley", "Harrison"),
+                new Staff(4, "Orr", "Theo"),
+                new Staff(5, "Metcalfe", "Drew")
+            );
+
+
+            modelBuilder.Entity<Workshop>().HasData(
+                new Workshop(1, "Excel (Beginner)", new DateTime(2023, 01, 10, 10, 0, 0)),
+                new Workshop(2, "Excel (Intermediate)", new DateTime(2023, 01, 11, 10, 0, 0)),
+                new Workshop(3, "Word (Beginner)", new DateTime(2023, 09, 01, 12, 0, 0))
+            );
+
+
+            modelBuilder.Entity<WorkshopStaff>().HasData(
+                new WorkshopStaff(1, 1),
+                new WorkshopStaff(1, 2),
+                new WorkshopStaff(2, 1),
+                new WorkshopStaff(2, 2),
+                new WorkshopStaff(2, 4),
+                new WorkshopStaff(3, 4)
+            );
+
         }
     }
 }
