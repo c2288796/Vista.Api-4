@@ -17,6 +17,7 @@ namespace Vista.Web.Data
         public int WorkshopId { get; set; }
         public Workshop Workshop { get; set; }
         public int StaffId { get; set; }
+        public Staff Staff { get; set; }
     }
 }
 
