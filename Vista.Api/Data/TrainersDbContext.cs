@@ -24,7 +24,7 @@ namespace Vista.Api.Data
         {
             var folder = Environment.SpecialFolder.MyDocuments;
             var path = Environment.GetFolderPath(folder);
-            DbPath = Path.Join(path, "vista.trainers.db");
+            DbPath = Path.Join(path, "vista.trainers2.db");
         }
 
         // OnConfiguring to specify that the SQLite database engine will be used
