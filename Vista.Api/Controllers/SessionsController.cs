@@ -53,7 +53,7 @@ namespace Vista.Api.Controllers
                     SessionId = s.SessionId,
                     SessionDate = s.SessionDate,
                     TrainerId = s.TrainerId,
-                    TrainerName = s.TrainerName
+                    TrainerName = s.Trainer.Name
                 })
                     .ToListAsync();
 
