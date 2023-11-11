@@ -32,6 +32,22 @@ namespace Vista.Api.Controllers
             return await _context.Sessions.ToListAsync();
         }
 
+        // GET: api/GetFreeSessions?date=yyyy-mm-dd&category=aa
+        // Gets a list of sessions that are not booked for a specific date and category
+        [HttpGet("GetFreeSessions")]
+        public async Task<ActionResult<IEnumerable<Session>>> GetFreeSessions(DateTime date, string category)
+        {
+            var sessions = await _context.Sessions
+                .Where(s => s.SessionDate == date
+                    && s.BookingReference == null
+                    && s.Trainer.TrainerCategories != null
+                    && s.Trainer.TrainerCategories
+                        .Any(tr => tr.Category.CategoryCode == category))
+                    .ToListAsync();
+
+            return sessions;
+        }
+
         // GET: api/Sessions/5
         // Get the details of an individual session.
         [HttpGet("{id}")]
