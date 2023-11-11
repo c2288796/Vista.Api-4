@@ -26,10 +26,10 @@ namespace Vista.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Session>>> GetSessions()
         {
-          if (_context.Sessions == null)
-          {
-              return NotFound();
-          }
+            if (_context.Sessions == null)
+            {
+                return NotFound();
+            }
             return await _context.Sessions.ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace Vista.Api.Controllers
         {
             // The following has to use a DTO - without it you will get an error:
             // "System.Text.Json.JsonException: A possible object cycle was detected which is not supported."
-            
+
             var sessions = await _context.Sessions
                 .Include(s => s.Trainer)
                 .Where(s => s.SessionDate == date
@@ -65,10 +65,10 @@ namespace Vista.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Session>> GetSession(int id)
         {
-          if (_context.Sessions == null)
-          {
-              return NotFound();
-          }
+            if (_context.Sessions == null)
+            {
+                return NotFound();
+            }
             var session = await _context.Sessions.FindAsync(id);
 
             if (session == null)
@@ -84,12 +84,12 @@ namespace Vista.Api.Controllers
         [HttpPut("BookSession/{id}")]
         public async Task<IActionResult> BookSession(int id, SessionBookingRequestDto request)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if(id != request.SessionId)
+            if (id != request.SessionId)
             {
                 return BadRequest();
             }
@@ -136,6 +136,45 @@ namespace Vista.Api.Controllers
                 TrainerName = session.Trainer!.Name,
                 BookingReference = bookRef
             });
+        }
+
+        // PUT: api/CancelSession?id=5&bookingReference=eb30cd7c-2fe5-4849-aaeb-e6769f81dedf
+        // Cancel session booking
+        [HttpPut("CancelSession")]
+        public async Task<IActionResult> CancelSession(int id, string bookingReference)
+        {
+            if(String.IsNullOrEmpty(bookingReference))
+            {
+                return BadRequest();
+            }
+
+            var session = await _context.Sessions
+                .Where(s => s.SessionId == id)
+                .FirstOrDefaultAsync();
+
+            if (session == null || session.BookingReference != bookingReference)
+            {
+                return NotFound();  
+            }
+
+            // Clear booking reference
+            session.BookingReference = null;
+
+            _context.Entry(session).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+                // Log error
+                // return StatusCode(500);
+            }
+
+            // Confirm update has been completed
+            return Ok();
         }
 
         // POST: api/Sessions/AddSessionDate
