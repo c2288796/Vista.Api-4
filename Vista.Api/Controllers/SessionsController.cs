@@ -36,7 +36,7 @@ namespace Vista.Api.Controllers
         // GET: api/GetFreeSessions?date=yyyy-mm-dd&category=aa
         // Gets a list of sessions that are not booked for a specific date and category
         [HttpGet("GetFreeSessions")]
-        public async Task<ActionResult<IEnumerable<Session>>> GetFreeSessions(DateTime date, string category)
+        public async Task<ActionResult<IEnumerable<SessionFreeSlotDto>>> GetFreeSessions(DateTime date, string category)
         {
             // The following has to use a DTO - without it you will get an error:
             // "System.Text.Json.JsonException: A possible object cycle was detected which is not supported."
