@@ -71,16 +71,16 @@ namespace Vista.Web.Controllers
             return View(workshopStaff);
         }
 
-        // POST: WorkshopStaff/Delete/5
+        // POST: WorkshopStaff/Delete?workshopId=2&staffId=1
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? workshopId, int? staffId)
         {
             if (_context.WorkshopStaff == null)
             {
                 return Problem("Entity set 'WorkshopsContext.WorkshopStaff'  is null.");
             }
-            var workshopStaff = await _context.WorkshopStaff.FindAsync(id);
+            var workshopStaff = await _context.WorkshopStaff.FindAsync(workshopId, staffId);
             if (workshopStaff != null)
             {
                 _context.WorkshopStaff.Remove(workshopStaff);
