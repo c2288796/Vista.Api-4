@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Staff.FirstName)
             </td>
             <td>
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Delete", "Delete", new { workshopId=item.WorkshopId, staffId=item.Staff })
             </td>
         </tr>
 }
