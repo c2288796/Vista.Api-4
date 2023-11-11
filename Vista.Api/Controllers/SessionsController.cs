@@ -79,16 +79,40 @@ namespace Vista.Api.Controllers
             return session;
         }
 
-        // PUT: api/Sessions/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // Update the details of a session.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSession(int id, Session session)
+        // PUT: api/BookSession/5
+        // Book session.
+        [HttpPut("BookSession/{id}")]
+        public async Task<IActionResult> BookSession(int id, SessionBookingRequestDto request)
         {
-            if (id != session.SessionId)
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(id != request.SessionId)
             {
                 return BadRequest();
             }
+
+            var session = await _context.Sessions
+                .Include(s => s.Trainer) // Include this to get the trainer name
+                .Where(s => s.SessionId == id)
+                .FirstOrDefaultAsync();
+
+            if (session == null || session.SessionDate != request.SessionDate)
+            {
+                return NotFound();
+            }
+
+            // Check if already booked?
+            if (session.BookingReference != null)
+            {
+                return BadRequest("Session already booked");
+            }
+
+            var bookRef = Guid.NewGuid().ToString(); // Universally Unique Identifier (UUID)
+
+            session.BookingReference = bookRef;
 
             _context.Entry(session).State = EntityState.Modified;
 
@@ -96,19 +120,22 @@ namespace Vista.Api.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
-                if (!SessionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
+                // Log error
+                // return StatusCode(500);
             }
 
-            return NoContent();
+            // Create a return the booking details using a DTO
+            return Ok(new SessionBookingDto
+            {
+                SessionId = session.SessionId,
+                SessionDate = session.SessionDate,
+                TrainerId = session.TrainerId,
+                TrainerName = session.Trainer!.Name,
+                BookingReference = bookRef
+            });
         }
 
         // POST: api/Sessions/AddSessionDate
