@@ -19,9 +19,19 @@ namespace Vista.Web.Controllers
         }
 
         // GET: WorkshopStaff
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id = null)
         {
-            var workshopsContext = _context.WorkshopStaff.Include(w => w.Staff).Include(w => w.Workshop);
+            var workshopsContext = _context.WorkshopStaff.AsQueryable(); // AsQueryable turns the DBSet into a searchable list type
+
+            if (id != null)
+            {
+                workshopsContext = workshopsContext.Where(ws => ws.WorkshopId == id);
+            }
+
+            workshopsContext = workshopsContext
+                .Include(w => w.Staff)
+                .Include(w => w.Workshop);
+
             return View(await workshopsContext.ToListAsync());
         }
 
