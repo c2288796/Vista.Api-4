@@ -23,6 +23,6 @@ namespace Vista.Web.Data
         public string CategoryCode { get; set; } = null!;
         public string BookingRef { get; set; } = null!;
 
-        // Placeholder for List of Staff (many side of one-to-many)
+        public List<WorkshopStaff> Staff { get; set; }
     }
 }
