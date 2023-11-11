@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vista.Api.Data;
+using Vista.Api.Dtos;
 
 namespace Vista.Api.Controllers
 {
@@ -37,6 +38,9 @@ namespace Vista.Api.Controllers
         [HttpGet("GetFreeSessions")]
         public async Task<ActionResult<IEnumerable<Session>>> GetFreeSessions(DateTime date, string category)
         {
+            // The following has to use a DTO - without it you will get an error:
+            // "System.Text.Json.JsonException: A possible object cycle was detected which is not supported."
+            
             var sessions = await _context.Sessions
                 .Include(s => s.Trainer)
                 .Where(s => s.SessionDate == date
@@ -44,6 +48,13 @@ namespace Vista.Api.Controllers
                     && s.Trainer.TrainerCategories != null
                     && s.Trainer.TrainerCategories
                         .Any(tr => tr.Category.CategoryCode == category))
+                .Select(s => new SessionFreeSlotDto
+                {
+                    SessionId = s.SessionId,
+                    SessionDate = s.SessionDate,
+                    TrainerId = s.TrainerId,
+                    TrainerName = s.TrainerName
+                })
                     .ToListAsync();
 
             return sessions;
