@@ -92,6 +92,12 @@ namespace Vista.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            var catList = await GetCategories();
+
+            // Prepare the select list
+            ViewData["CategoryCode"] = new SelectList(catList, "CategoryCode", "CategoryName");
+
             return View(workshop);
         }
 
