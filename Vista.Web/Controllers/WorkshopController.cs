@@ -114,6 +114,12 @@ namespace Vista.Web.Controllers
             {
                 return NotFound();
             }
+
+            var catList = await GetCategories();
+
+            // Prepare the select list
+            ViewData["CategoryCode"] = new SelectList(catList, "CategoryCode", "CategoryName");
+
             return View(workshop);
         }
 
@@ -149,6 +155,12 @@ namespace Vista.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            var catList = await GetCategories();
+
+            // Prepare the select list
+            ViewData["CategoryCode"] = new SelectList(catList, "CategoryCode", "CategoryName");
+
             return View(workshop);
         }
 
