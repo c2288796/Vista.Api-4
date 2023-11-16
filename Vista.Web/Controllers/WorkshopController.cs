@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Vista.Web.Data;
+using Vista.Web.Dtos;
 
 namespace Vista.Web.Controllers
 {
@@ -43,9 +44,39 @@ namespace Vista.Web.Controllers
         }
 
         // GET: Workshop/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var catList = await GetCategories();
+
+            // Prepare the select list
+            ViewData["CategoryCode"] = new SelectList(catList, "CategoryCode", "CategoryName");
+
             return View();
+        }
+
+        // Call web service and get a list of categories
+        private async Task<List<CategoryDto>> GetCategories()
+        {
+            var categories = new List<CategoryDto>().AsEnumerable();
+
+            // Create an initial Http Client
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri("https://localhost:7161/");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
+            // Call web service
+            HttpResponseMessage response = await client.GetAsync("api/categories");
+            if(response.IsSuccessStatusCode)
+            {
+                // Decode response into a DTO
+                categories = await response.Content.ReadAsAsync<IEnumerable<CategoryDto>>();
+            }
+            else
+            {
+                throw new ApplicationException("Something went wrong calling the API:" + response.ReasonPhrase);
+            }
+
+            return categories.ToList();
         }
 
         // POST: Workshop/Create
