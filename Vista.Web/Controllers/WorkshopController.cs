@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Vista.Web.Data;
 using Vista.Web.Dtos;
+using Vista.Web.Models;
 
 namespace Vista.Web.Controllers
 {
@@ -22,7 +23,21 @@ namespace Vista.Web.Controllers
         // GET: Workshop
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Workshops.ToListAsync());
+            var catList = await GetCategories();
+
+            var workshop = await _context.Workshops.ToListAsync();
+
+            var vm = workshop.Select(w => new WorkshopVM
+            {
+                WorkshopId = w.WorkshopId,
+                Name = w.Name,
+                DateAndTime = w.DateAndTime,
+                BookingRef = w.BookingRef,
+                CategoryCode = w.CategoryCode,
+                CategoryName = catList.FirstOrDefault(c => c.CategoryCode == w.CategoryCode)?.CategoryName ?? w.CategoryCode
+            });
+
+            return View(vm);
         }
 
         // GET: Workshop/Details/5
